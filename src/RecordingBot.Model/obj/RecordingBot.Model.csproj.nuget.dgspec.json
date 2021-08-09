@@ -1,0 +1,73 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj": {}
+  },
+  "projects": {
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\helm\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj",
+        "projectName": "RecordingBot.Model",
+        "projectPath": "C:\\helm\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj",
+        "packagesPath": "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages",
+        "outputPath": "C:\\helm\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Model\\obj\\",
+        "projectStyle": "PackageReference",
+        "configFilePaths": [
+          "C:\\helm\\microsoft-graph-comms-samples\\Samples\\NuGet.Config",
+          "C:\\Users\\karim\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "targetAlias": "net472",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "targetAlias": "net472",
+          "dependencies": {
+            "Microsoft.CSharp": {
+              "target": "Package",
+              "version": "[4.7.0, )"
+            },
+            "Microsoft.Graph": {
+              "target": "Package",
+              "version": "[3.8.0, )"
+            },
+            "Microsoft.Graph.Communications.Calls": {
+              "target": "Package",
+              "version": "[1.2.0.850, )"
+            },
+            "Microsoft.Owin.Host.HttpListener": {
+              "target": "Package",
+              "version": "[4.1.0, )"
+            },
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[12.0.3, )"
+            },
+            "System.Data.DataSetExtensions": {
+              "target": "Package",
+              "version": "[4.5.0, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

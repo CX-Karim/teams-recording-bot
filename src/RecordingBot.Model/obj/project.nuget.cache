@@ -1,0 +1,27 @@
+{
+  "version": 2,
+  "dgSpecHash": "NYFNt0cqxPQAbLI2+BUqtZ23tsBsr4LzfkhK21KoMmRQqv5RUYh+pVi58pLtdJU3sGPZeGyA4uAFY7MRz8VQow==",
+  "success": true,
+  "projectFilePath": "C:\\helm\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj",
+  "expectedPackageFiles": [
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\microsoft.extensions.logging.abstractions\\2.1.1\\microsoft.extensions.logging.abstractions.2.1.1.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\microsoft.graph\\3.8.0\\microsoft.graph.3.8.0.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\microsoft.graph.communications.calls\\1.2.0.850\\microsoft.graph.communications.calls.1.2.0.850.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\microsoft.graph.communications.client\\1.2.0.850\\microsoft.graph.communications.client.1.2.0.850.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\microsoft.graph.communications.common\\1.2.0.850\\microsoft.graph.communications.common.1.2.0.850.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\microsoft.graph.communications.core\\1.2.0.850\\microsoft.graph.communications.core.1.2.0.850.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\microsoft.graph.core\\1.20.1\\microsoft.graph.core.1.20.1.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\microsoft.owin.host.httplistener\\4.1.0\\microsoft.owin.host.httplistener.4.1.0.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\newtonsoft.json\\12.0.3\\newtonsoft.json.12.0.3.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\system.buffers\\4.4.0\\system.buffers.4.4.0.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\system.data.datasetextensions\\4.5.0\\system.data.datasetextensions.4.5.0.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\system.diagnostics.diagnosticsource\\4.6.0\\system.diagnostics.diagnosticsource.4.6.0.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\system.memory\\4.5.3\\system.memory.4.5.3.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\system.numerics.vectors\\4.4.0\\system.numerics.vectors.4.4.0.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\system.runtime.compilerservices.unsafe\\4.5.2\\system.runtime.compilerservices.unsafe.4.5.2.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\system.threading.tasks.dataflow\\4.9.0\\system.threading.tasks.dataflow.4.9.0.nupkg.sha512",
+    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages\\system.valuetuple\\4.3.0\\system.valuetuple.4.3.0.nupkg.sha512"
+  ],
+  "logs": []
+}
