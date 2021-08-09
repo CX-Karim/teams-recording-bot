@@ -1,0 +1,4 @@
+C:\AKS\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.csproj.AssemblyReference.cache
+C:\AKS\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.dll.config
+C:\AKS\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.GeneratedMSBuildEditorConfig.editorconfig
+C:\AKS\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.csproj.CoreCompileInputs.cache

@@ -56,6 +56,12 @@ namespace RecordingBot.Services.Bot
         /// The call identifier
         /// </summary>
         private readonly string _callId;
+        private readonly List<IVideoSocket> videoSockets;
+        private readonly IVideoSocket vbssSocket;
+        private List<MediaPayload> vbssData;
+        private Dictionary<int, string> socketUserMapping;
+        private Dictionary<string, List<MediaPayload>> userVideoData;
+        private readonly ILocalMediaSession mediaSession;
 
         /// <summary>
         /// Return the last read 'audio quality of experience data' in a serializable structure
@@ -97,12 +103,36 @@ namespace RecordingBot.Services.Bot
 
             // Subscribe to the audio media.
             this._audioSocket = mediaSession.AudioSocket;
+            this.mediaSession = mediaSession;
             if (this._audioSocket == null)
             {
                 throw new InvalidOperationException("A mediaSession needs to have at least an audioSocket");
             }
 
+
             this._audioSocket.AudioMediaReceived += this.OnAudioMediaReceived;
+            try
+            {
+                this.videoSockets = (List<IVideoSocket>)this.mediaSession.VideoSockets;
+            }
+            catch (Exception e) {
+                Console.WriteLine("VideoList-Failed");
+            }
+            // videoParticipants.AddRange(new uint[this.videoSockets.Count()]);
+            if (this.videoSockets?.Any() == true)
+            {
+                this.videoSockets.ForEach(videoSocket => videoSocket.VideoMediaReceived += this.OnVideoMediaReceived);
+            }
+
+            // Subscribe to the VBSS media.
+            this.vbssSocket = this.mediaSession.VbssSocket;
+            if (this.vbssSocket != null)
+            {
+                mediaSession.VbssSocket.VideoMediaReceived += this.OnVbssMediaReceived;
+            }
+            this.vbssData = new List<MediaPayload>();
+            this.socketUserMapping = new Dictionary<int, string>();
+            this.userVideoData = new Dictionary<string, List<MediaPayload>>();
         }
 
         /// <summary>
@@ -143,6 +173,17 @@ namespace RecordingBot.Services.Bot
             base.Dispose(disposing);
 
             this._audioSocket.AudioMediaReceived -= this.OnAudioMediaReceived;
+
+            if (this.videoSockets?.Any() == true)
+            {
+                this.videoSockets.ForEach(videoSocket => videoSocket.VideoMediaReceived -= this.OnVideoMediaReceived);
+            }
+
+            // Subscribe to the VBSS media.
+            if (this.vbssSocket != null)
+            {
+               this.mediaSession.VbssSocket.VideoMediaReceived -= this.OnVbssMediaReceived;
+            }
         }
 
         /// <summary>
@@ -168,6 +209,200 @@ namespace RecordingBot.Services.Bot
                 e.Buffer.Dispose();
             }
 
+        }
+        public void Subscribe(MediaType mediaType, uint mediaSourceId, VideoResolution videoResolution, Microsoft.Graph.Identity participant, uint socketId = 0)
+        {
+            try
+            {
+                this.ValidateSubscriptionMediaType(mediaType);
+
+                this.GraphLogger.Info($"Subscribing to the video source: {mediaSourceId} on socket: {socketId} with the preferred resolution: {videoResolution} and mediaType: {mediaType}");
+                if (mediaType == MediaType.Vbss)
+                {
+                    if (this.vbssSocket == null)
+                    {
+                        this.GraphLogger.Warn($"vbss socket not initialized");
+                    }
+                    else
+                    {
+                        this.vbssSocket.Subscribe(videoResolution, mediaSourceId);
+                        this.vbssData.Add(new MediaPayload
+                        {
+                            Data = null,
+                            Timestamp = DateTime.UtcNow.Ticks,
+                            Width = 0,
+                            Height = 0,
+                            ColorFormat = VideoColorFormat.H264,
+                            FrameRate = 0,
+                            Event = "Subscribed",
+                            UserId = participant.Id,
+                            DisplayName = participant.DisplayName,
+                        });
+                    }
+                }
+                else if (mediaType == MediaType.Video)
+                {
+                    if (this.videoSockets == null)
+                    {
+                        this.GraphLogger.Warn($"video sockets were not created");
+                    }
+                    else
+                    {
+                        if (!this.socketUserMapping.ContainsKey((int)socketId))
+                        {
+                            this.socketUserMapping.Add((int)socketId, participant.Id);
+                        }
+                        else
+                        {
+                            this.socketUserMapping[(int)socketId] = participant.Id;
+                        }
+
+                        if (!this.userVideoData.ContainsKey(participant.Id))
+                        {
+                            this.userVideoData.Add(participant.Id, new List<MediaPayload>());
+                        }
+
+                        /*
+                        if (!socketVideoData.ContainsKey((int)socketId))
+                        {
+                            this.socketVideoData.Add((int)socketId, new List<MediaPayload>());
+                        }
+                        */
+
+                        this.userVideoData[participant.Id].Add(new MediaPayload
+                        {
+                            Data = null,
+                            Timestamp = DateTime.UtcNow.Ticks,
+                            Width = 0,
+                            Height = 0,
+                            ColorFormat = VideoColorFormat.H264,
+                            FrameRate = 0,
+                            Event = "Subscribed",
+                            UserId = participant.Id,
+                            DisplayName = participant.DisplayName,
+                        });
+                        this.videoSockets[(int)socketId].Subscribe(videoResolution, mediaSourceId);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                this.GraphLogger.Error(ex, $"Video Subscription failed for the socket: {socketId} and MediaSourceId: {mediaSourceId} with exception");
+            }
+        }
+        public void Unsubscribe(MediaType mediaType, uint socketId = 0)
+        {
+            try
+            {
+                this.ValidateSubscriptionMediaType(mediaType);
+
+                this.GraphLogger.Info($"Unsubscribing to video for the socket: {socketId} and mediaType: {mediaType}");
+
+                if (mediaType == MediaType.Vbss)
+                {
+                    this.vbssSocket?.Unsubscribe();
+                    this.vbssData.Add(new MediaPayload
+                    {
+                        Data = null,
+                        Timestamp = DateTime.UtcNow.Ticks,
+                        Width = 0,
+                        Height = 0,
+                        ColorFormat = VideoColorFormat.H264,
+                        FrameRate = 0,
+                        Event = "Unsubscribe"
+                    });
+                }
+                else if (mediaType == MediaType.Video)
+                {
+                    this.videoSockets[(int)socketId]?.Unsubscribe();
+
+                    this.userVideoData[this.socketUserMapping[(int)socketId]].Add(new MediaPayload
+                    {
+                        Data = null,
+                        Timestamp = DateTime.UtcNow.Ticks,
+                        Width = 0,
+                        Height = 0,
+                        ColorFormat = VideoColorFormat.H264,
+                        FrameRate = 0,
+                        Event = "Unsubscribe",
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                this.GraphLogger.Error(ex, $"Unsubscribing to video failed for the socket: {socketId} with exception");
+            }
+        }
+        private void ValidateSubscriptionMediaType(MediaType mediaType)
+        {
+            if (mediaType != MediaType.Vbss && mediaType != MediaType.Video)
+            {
+                throw new ArgumentOutOfRangeException($"Invalid mediaType: {mediaType}");
+            }
+        }
+        private void OnVideoMediaReceived(object sender, VideoMediaReceivedEventArgs e)
+        {
+            this.GraphLogger.Info($"[{e.SocketId}]: Received Video: [VideoMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp}, Width={e.Buffer.VideoFormat.Width}, Height={e.Buffer.VideoFormat.Height}, ColorFormat={e.Buffer.VideoFormat.VideoColorFormat}, FrameRate={e.Buffer.VideoFormat.FrameRate})]");
+            // this.log += DateTimeOffset.UtcNow.ToString() + $"[{e.SocketId}]: Received Video: [VideoMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp}, Width={e.Buffer.VideoFormat.Width}, Height={e.Buffer.VideoFormat.Height}, ColorFormat={e.Buffer.VideoFormat.VideoColorFormat}, FrameRate={e.Buffer.VideoFormat.FrameRate})]\n";
+
+            try
+            {
+                int length = (int)e.Buffer.Length;
+                unsafe
+                {
+                    // this.log += DateTimeOffset.UtcNow.ToString() + "Creating new byte array\n";
+                    byte[] second = new byte[length];
+                    // this.log += DateTimeOffset.UtcNow.ToString() + "Copy from pointer to byte array\n";
+                    Marshal.Copy(e.Buffer.Data, second, 0, length);
+
+                    this.userVideoData[this.socketUserMapping[e.SocketId]].Add(new MediaPayload
+                    {
+                        Data = second,
+                        Timestamp = e.Buffer.Timestamp,
+                        Width = e.Buffer.VideoFormat.Width,
+                        Height = e.Buffer.VideoFormat.Height,
+                        ColorFormat = e.Buffer.VideoFormat.VideoColorFormat,
+                        FrameRate = e.Buffer.VideoFormat.FrameRate,
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                this.GraphLogger.Warn("Exception");
+            }
+
+            e.Buffer.Dispose();
+        }
+        private void OnVbssMediaReceived(object sender, VideoMediaReceivedEventArgs e)
+        {
+            this.GraphLogger.Info($"[{e.SocketId}]: Received VBSS: [VideoMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp}, Width={e.Buffer.VideoFormat.Width}, Height={e.Buffer.VideoFormat.Height}, ColorFormat={e.Buffer.VideoFormat.VideoColorFormat}, FrameRate={e.Buffer.VideoFormat.FrameRate})]");
+            // this.log += DateTimeOffset.UtcNow.ToString() + $"[{e.SocketId}]: Received VBSS: [VideoMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp}, Width={e.Buffer.VideoFormat.Width}, Height={e.Buffer.VideoFormat.Height}, ColorFormat={e.Buffer.VideoFormat.VideoColorFormat}, FrameRate={e.Buffer.VideoFormat.FrameRate})]\n";
+            try
+            {
+                int length = (int)e.Buffer.Length;
+
+                // this.log += DateTimeOffset.UtcNow.ToString() + "Creating new byte array\n";
+                byte[] second = new byte[length];
+                // this.log += DateTimeOffset.UtcNow.ToString() + "Copy from pointer to byte array\n";
+                Marshal.Copy(e.Buffer.Data, second, 0, length);
+
+                this.vbssData.Add(new MediaPayload
+                {
+                    Data = second,
+                    Timestamp = e.Buffer.Timestamp,
+                    Width = e.Buffer.VideoFormat.Width,
+                    Height = e.Buffer.VideoFormat.Height,
+                    ColorFormat = e.Buffer.VideoFormat.VideoColorFormat,
+                    FrameRate = e.Buffer.VideoFormat.FrameRate,
+                });
+
+            }
+            catch (Exception ex)
+            {
+                this.GraphLogger.Warn("Exception");
+            }
+
+            e.Buffer.Dispose();
         }
     }
 }

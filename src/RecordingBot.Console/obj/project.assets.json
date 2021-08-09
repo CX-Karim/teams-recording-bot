@@ -7199,19 +7199,18 @@
     ]
   },
   "packageFolders": {
-    "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages": {}
+    "C:\\Users\\karim\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\helm\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj",
+      "projectUniqueName": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj",
       "projectName": "RecordingBot.Console",
-      "projectPath": "C:\\helm\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj",
-      "packagesPath": "C:\\helm\\microsoft-graph-comms-samples\\Samples\\packages",
-      "outputPath": "C:\\helm\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Console\\obj\\",
+      "projectPath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj",
+      "packagesPath": "C:\\Users\\karim\\.nuget\\packages\\",
+      "outputPath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Console\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\helm\\microsoft-graph-comms-samples\\Samples\\NuGet.Config",
         "C:\\Users\\karim\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -7219,14 +7218,15 @@
         "net472"
       ],
       "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
         "net472": {
           "targetAlias": "net472",
           "projectReferences": {
-            "C:\\helm\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj": {
-              "projectPath": "C:\\helm\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj"
+            "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj": {
+              "projectPath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj"
             }
           }
         }
@@ -7254,7 +7254,7 @@
             "version": "[4.5.0, )"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100-preview.6.21355.2\\RuntimeIdentifierGraph.json"
       }
     },
     "runtimes": {

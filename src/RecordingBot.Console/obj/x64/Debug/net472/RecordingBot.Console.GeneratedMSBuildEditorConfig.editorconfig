@@ -1,0 +1,3 @@
+is_global = true
+build_property.RootNamespace = RecordingBot.Console
+build_property.ProjectDir = C:\AKS\teams-recording-bot\src\RecordingBot.Console\
