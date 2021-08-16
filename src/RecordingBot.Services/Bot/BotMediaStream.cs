@@ -19,11 +19,14 @@ using Microsoft.Graph.Communications.Common;
 using Microsoft.Graph.Communications.Common.Telemetry;
 using Microsoft.Skype.Bots.Media;
 using Microsoft.Skype.Internal.Media.Services.Common;
+using Newtonsoft.Json;
 using RecordingBot.Services.Contract;
 using RecordingBot.Services.Media;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
+using System.Text;
 using System.Threading.Tasks;
 
 
@@ -57,7 +60,8 @@ namespace RecordingBot.Services.Bot
         /// </summary>
         private readonly string _callId;
         private readonly List<IVideoSocket> videoSockets;
-        private readonly IVideoSocket vbssSocket;
+        private IVideoSocket vbssSocket;
+        private IVideoSocket oneVideo;
         private List<MediaPayload> vbssData;
         private Dictionary<int, string> socketUserMapping;
         private Dictionary<string, List<MediaPayload>> userVideoData;
@@ -111,17 +115,27 @@ namespace RecordingBot.Services.Bot
 
 
             this._audioSocket.AudioMediaReceived += this.OnAudioMediaReceived;
-            try
-            {
-                this.videoSockets = (List<IVideoSocket>)this.mediaSession.VideoSockets;
+            oneVideo = this.mediaSession.VideoSocket;
+            if (this.oneVideo != null) {
+                mediaSession.VideoSocket.VideoMediaReceived += this.OnVideoMediaReceived;
+                oneVideo.VideoMediaReceived += this.OnVideoMediaReceived;
             }
-            catch (Exception e) {
-                Console.WriteLine("VideoList-Failed");
-            }
+
+            this.videoSockets = this.mediaSession.VideoSockets?.ToList();
             // videoParticipants.AddRange(new uint[this.videoSockets.Count()]);
             if (this.videoSockets?.Any() == true)
             {
-                this.videoSockets.ForEach(videoSocket => videoSocket.VideoMediaReceived += this.OnVideoMediaReceived);
+                this.videoSockets.ForEach(videoSocket => {
+                    try
+                    {
+                        videoSocket.VideoMediaReceived += this.OnVideoMediaReceived;
+                    }
+                    catch (Exception e)
+                    {
+
+                        System.Console.WriteLine("ERROR" + e.Message);
+                    }
+                });
             }
 
             // Subscribe to the VBSS media.
@@ -167,32 +181,91 @@ namespace RecordingBot.Services.Bot
         /// <inheritdoc/>
         protected override void Dispose(bool disposing)
         {
-            // Event Dispose of the bot media stream object
-            _eventPublisher.Publish("MediaStreamDispose", disposing.ToString());
-
-            base.Dispose(disposing);
-
-            this._audioSocket.AudioMediaReceived -= this.OnAudioMediaReceived;
-
-            if (this.videoSockets?.Any() == true)
+            try
             {
-                this.videoSockets.ForEach(videoSocket => videoSocket.VideoMediaReceived -= this.OnVideoMediaReceived);
+                base.Dispose(disposing);
+                this._audioSocket.AudioMediaReceived -= this.OnAudioMediaReceived;
+                if (this.videoSockets?.Any() == true)
+                {
+                    this.videoSockets.ForEach(videoSocket => videoSocket.VideoMediaReceived -= this.OnVideoMediaReceived);
+                }
+                // Subscribe to the VBSS media.
+                if (this.vbssSocket != null)
+                {
+                    this.mediaSession.VbssSocket.VideoMediaReceived -= this.OnVbssMediaReceived;
+                }
             }
-
-            // Subscribe to the VBSS media.
-            if (this.vbssSocket != null)
+            catch (Exception e)
             {
-               this.mediaSession.VbssSocket.VideoMediaReceived -= this.OnVbssMediaReceived;
+                var innerMessage = e.InnerException == null ? string.Empty : e.InnerException.Message;
+                var innerStack = e.InnerException == null ? string.Empty : e.InnerException.StackTrace;
+            }
+            try
+            {
+                // Saving raw vbss
+                string vbssJson = JsonConvert.SerializeObject(this.vbssData);
+                System.IO.File.WriteAllText($"C:\\vbssData.json", vbssJson);
+                foreach (var key in this.userVideoData.Keys)
+                {
+                    // Saving raw video
+                    string videoJson = JsonConvert.SerializeObject(this.userVideoData[key]);
+                    byte[] videoBytes = Encoding.UTF8.GetBytes(videoJson);
+                    System.IO.File.WriteAllText($"C:\\{key}VideoData.json", videoJson);
+                }
+            }
+            catch (Exception e)
+            {
+                var innerMessage = e.InnerException == null ? string.Empty : e.InnerException.Message;
+                var innerStack = e.InnerException == null ? string.Empty : e.InnerException.StackTrace;
             }
         }
+
+        // Event Dispose of the bot media stream object
+        /* _eventPublisher.Publish("MediaStreamDispose", disposing.ToString());
+
+         base.Dispose(disposing);
+
+         this._audioSocket.AudioMediaReceived -= this.OnAudioMediaReceived;
+
+         if (this.videoSockets?.Any() == true)
+         {
+             this.videoSockets.ForEach(videoSocket => videoSocket.VideoMediaReceived -= this.OnVideoMediaReceived);
+         }
+
+         // Subscribe to the VBSS media.
+         if (this.vbssSocket != null)
+         {
+             this.mediaSession.VbssSocket.VideoMediaReceived -= this.OnVbssMediaReceived;
+         }
+         try
+         {
+             // Saving raw vbss
+             string vbssJson = JsonConvert.SerializeObject(this.vbssData);
+             System.IO.File.WriteAllText($"vbssData.json", vbssJson);
+             foreach (var key in this.userVideoData.Keys)
+             {
+                 var filename = "test";
+                 // Saving raw video
+                 string videoJson = JsonConvert.SerializeObject(this.userVideoData[key]);
+                 byte[] videoBytes = Encoding.UTF8.GetBytes(videoJson);
+
+                 System.IO.File.WriteAllText($"C:\\{filename}.json", videoJson);
+             }
+
+         }
+         catch
+         {
+         }*/
+    //}
 
         /// <summary>
         /// Receive audio from subscribed participant.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The audio media received arguments.</param>
-        private async void OnAudioMediaReceived(object sender, AudioMediaReceivedEventArgs e)
+            private async void OnAudioMediaReceived(object sender, AudioMediaReceivedEventArgs e)
         {
+            
             this.GraphLogger.Info($"Received Audio: [AudioMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp})]");
 
             try
@@ -268,7 +341,6 @@ namespace RecordingBot.Services.Bot
                             this.socketVideoData.Add((int)socketId, new List<MediaPayload>());
                         }
                         */
-
                         this.userVideoData[participant.Id].Add(new MediaPayload
                         {
                             Data = null,
@@ -287,7 +359,9 @@ namespace RecordingBot.Services.Bot
             }
             catch (Exception ex)
             {
+                System.Console.WriteLine(ex.ToString());
                 this.GraphLogger.Error(ex, $"Video Subscription failed for the socket: {socketId} and MediaSourceId: {mediaSourceId} with exception");
+                System.Console.WriteLine($"Video Subscription failed for the socket: {socketId} and MediaSourceId: {mediaSourceId} with exception");
             }
         }
         public void Unsubscribe(MediaType mediaType, uint socketId = 0)
@@ -340,21 +414,20 @@ namespace RecordingBot.Services.Bot
                 throw new ArgumentOutOfRangeException($"Invalid mediaType: {mediaType}");
             }
         }
-        private void OnVideoMediaReceived(object sender, VideoMediaReceivedEventArgs e)
+        private async void OnVideoMediaReceived(object sender, VideoMediaReceivedEventArgs e)
         {
+            
             this.GraphLogger.Info($"[{e.SocketId}]: Received Video: [VideoMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp}, Width={e.Buffer.VideoFormat.Width}, Height={e.Buffer.VideoFormat.Height}, ColorFormat={e.Buffer.VideoFormat.VideoColorFormat}, FrameRate={e.Buffer.VideoFormat.FrameRate})]");
+            System.Console.WriteLine($"[{e.SocketId}]: Received Video: [VideoMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp}, Width={e.Buffer.VideoFormat.Width}, Height={e.Buffer.VideoFormat.Height}, ColorFormat={e.Buffer.VideoFormat.VideoColorFormat}, FrameRate={e.Buffer.VideoFormat.FrameRate})]");
             // this.log += DateTimeOffset.UtcNow.ToString() + $"[{e.SocketId}]: Received Video: [VideoMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp}, Width={e.Buffer.VideoFormat.Width}, Height={e.Buffer.VideoFormat.Height}, ColorFormat={e.Buffer.VideoFormat.VideoColorFormat}, FrameRate={e.Buffer.VideoFormat.FrameRate})]\n";
-
             try
             {
                 int length = (int)e.Buffer.Length;
-                unsafe
                 {
                     // this.log += DateTimeOffset.UtcNow.ToString() + "Creating new byte array\n";
                     byte[] second = new byte[length];
                     // this.log += DateTimeOffset.UtcNow.ToString() + "Copy from pointer to byte array\n";
                     Marshal.Copy(e.Buffer.Data, second, 0, length);
-
                     this.userVideoData[this.socketUserMapping[e.SocketId]].Add(new MediaPayload
                     {
                         Data = second,
@@ -372,8 +445,21 @@ namespace RecordingBot.Services.Bot
             }
 
             e.Buffer.Dispose();
+            /*            try
+                        {
+                            await _mediaStream.AppendVideoBuffer(e.Buffer, this.participants);
+                            e.Buffer.Dispose();
+                        }
+                        catch (Exception ex)
+                        {
+                            this.GraphLogger.Error(ex);
+                        }
+                        finally
+                        {
+                            e.Buffer.Dispose();
+                        }*/
         }
-        private void OnVbssMediaReceived(object sender, VideoMediaReceivedEventArgs e)
+        private async void OnVbssMediaReceived(object sender, VideoMediaReceivedEventArgs e)
         {
             this.GraphLogger.Info($"[{e.SocketId}]: Received VBSS: [VideoMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp}, Width={e.Buffer.VideoFormat.Width}, Height={e.Buffer.VideoFormat.Height}, ColorFormat={e.Buffer.VideoFormat.VideoColorFormat}, FrameRate={e.Buffer.VideoFormat.FrameRate})]");
             // this.log += DateTimeOffset.UtcNow.ToString() + $"[{e.SocketId}]: Received VBSS: [VideoMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp}, Width={e.Buffer.VideoFormat.Width}, Height={e.Buffer.VideoFormat.Height}, ColorFormat={e.Buffer.VideoFormat.VideoColorFormat}, FrameRate={e.Buffer.VideoFormat.FrameRate})]\n";

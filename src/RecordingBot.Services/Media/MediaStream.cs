@@ -22,6 +22,7 @@ using RecordingBot.Services.Util;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Threading.Tasks.Dataflow;
@@ -39,6 +40,7 @@ namespace RecordingBot.Services.Media
         /// The buffer
         /// </summary>
         private BufferBlock<SerializableAudioMediaBuffer> _buffer;
+        private BufferBlock<SerializableVideoMediaBuffer> _Vbuffer;
         /// <summary>
         /// The token source
         /// </summary>
@@ -107,6 +109,23 @@ namespace RecordingBot.Services.Media
             try
             {
                 await _buffer.SendAsync(new SerializableAudioMediaBuffer(buffer, participants), _tokenSource.Token).ConfigureAwait(false);
+            }
+            catch (TaskCanceledException e)
+            {
+                _buffer?.Complete();
+                _logger.Error(e, "Cannot enqueue because queuing operation has been cancelled");
+            }
+        }
+        public async Task AppendVideoBuffer(VideoMediaBuffer buffer, List<IParticipant> participants)
+        {
+            if (!_isRunning)
+            {
+                await _start();
+            }
+
+            try
+            {
+                await _Vbuffer.SendAsync(new SerializableVideoMediaBuffer(buffer, participants), _tokenSource.Token).ConfigureAwait(false);
             }
             catch (TaskCanceledException e)
             {

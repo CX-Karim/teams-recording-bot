@@ -27,6 +27,7 @@ using RecordingBot.Services.Util;
 using System;
 using System.Collections.Concurrent;
 using System.Threading.Tasks;
+using System.Collections.Generic;
 
 namespace RecordingBot.Services.Bot
 {
@@ -43,6 +44,7 @@ namespace RecordingBot.Services.Bot
         /// The logger
         /// </summary>
         private readonly IGraphLogger _logger;
+
         /// <summary>
         /// The event publisher
         /// </summary>
@@ -188,7 +190,42 @@ namespace RecordingBot.Services.Bot
             try
             {
                 // create media session object, this is needed to establish call connections
-                return this.Client.CreateMediaSession(
+                var videoSocketSettings = new List<VideoSocketSettings>();
+
+                // create the receive only sockets settings for the multiview support
+                for (int i = 0; i < 4; i++)//HARDCODED
+                {
+                    videoSocketSettings.Add(new VideoSocketSettings
+                    {
+                        StreamDirections = StreamDirection.Recvonly,
+                        ReceiveColorFormat = VideoColorFormat.H264,
+                    });
+                }
+
+                // Create the VBSS socket settings
+                var vbssSocketSettings = new VideoSocketSettings
+                {
+                    StreamDirections = StreamDirection.Recvonly,
+                    ReceiveColorFormat = VideoColorFormat.H264,
+                    MediaType = MediaType.Vbss,
+                    SupportedSendVideoFormats = new List<VideoFormat>
+                {
+                    // fps 1.875 is required for h264 in vbss scenario.
+                    VideoFormat.H264_1920x1080_1_875Fps,
+                },
+                };
+
+                var mediaSession = this.Client.CreateMediaSession(
+                new AudioSocketSettings
+                {
+                    StreamDirections = StreamDirection.Recvonly,
+                    SupportedAudioFormat = AudioFormat.Pcm16K,
+                },
+                videoSocketSettings,
+                vbssSocketSettings,
+                mediaSessionId: mediaSessionId);
+                return mediaSession;
+/*                return this.Client.CreateMediaSession(
                     new AudioSocketSettings
                     {
                         StreamDirections = StreamDirection.Recvonly,
@@ -198,9 +235,12 @@ namespace RecordingBot.Services.Bot
                 },
                     new VideoSocketSettings
                     {
-                        StreamDirections = StreamDirection.Inactive
+                        StreamDirections = StreamDirection.Recvonly,
+                        ReceiveColorFormat = VideoColorFormat.H264,
+                        SupportedSendVideoFormats = (IList<VideoFormat>)VideoFormat.H264_1920x1080_30Fps,
+
                     },
-                    mediaSessionId: mediaSessionId);
+                    mediaSessionId: mediaSessionId);*/
             }
             catch (Exception e)
             {

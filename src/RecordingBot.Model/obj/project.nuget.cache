@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Q36aLBmHSmb0mU/g8V3Cl1WjJ5Ana+nlJoXu64cAe5zblkypA2PRGPVZVAQtxb8kOoxEQZje/p85s1RrIJDAuw==",
+  "dgSpecHash": "5auP18JbhoaAIdbHkOZdS5g62P5yvy2yH+kQht0wrgATgDcRUd3VT3629/XB2yIroent5LjpF0rcBdEFFMBLoQ==",
   "success": true,
-  "projectFilePath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj",
+  "projectFilePath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\karim\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
     "C:\\Users\\karim\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\2.1.1\\microsoft.extensions.logging.abstractions.2.1.1.nupkg.sha512",

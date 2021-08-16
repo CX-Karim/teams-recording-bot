@@ -1,4 +1,6 @@
-C:\AKS\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.csproj.AssemblyReference.cache
-C:\AKS\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.dll.config
-C:\AKS\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.GeneratedMSBuildEditorConfig.editorconfig
-C:\AKS\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.csproj.CoreCompileInputs.cache
+C:\Users\User\Downloads\microsoft-graph-comms-samples\microsoft-graph-comms-samples\microsoft-graph-comms-samples\Samples\V1.0Samples\AksSamples\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.csprojAssemblyReference.cache
+C:\Users\User\Downloads\microsoft-graph-comms-samples\microsoft-graph-comms-samples\microsoft-graph-comms-samples\Samples\V1.0Samples\AksSamples\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.dll.config
+C:\Users\User\Downloads\microsoft-graph-comms-samples\microsoft-graph-comms-samples\microsoft-graph-comms-samples\Samples\V1.0Samples\AksSamples\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.csproj.CoreCompileInputs.cache
+C:\Users\karim\source\repos\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.csproj.AssemblyReference.cache
+C:\Users\karim\source\repos\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.dll.config
+C:\Users\karim\source\repos\teams-recording-bot\src\RecordingBot.Tests\obj\x64\Debug\net472\RecordingBot.Tests.csproj.CoreCompileInputs.cache

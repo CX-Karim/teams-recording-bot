@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "WFWVqKMLqLQsDntehgTSm2L1oatsw8CSxtHyAaqCbbZsNZnqcBl724HInhQyorrokBUSjmCCVGpQ1K5qguroqQ==",
+  "dgSpecHash": "s/kO2znTzGJtsAiCl33kqY2UeGjViP3sMKHGzjWJYpUC0CvNXa9YsdA9dGqdB9fZWTx7SO6gA7OW0UEpM+iaRg==",
   "success": true,
-  "projectFilePath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Tests\\RecordingBot.Tests.csproj",
+  "projectFilePath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Tests\\RecordingBot.Tests.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\karim\\.nuget\\packages\\castle.core\\4.4.0\\castle.core.4.4.0.nupkg.sha512",
     "C:\\Users\\karim\\.nuget\\packages\\dotnetenv\\1.4.0\\dotnetenv.1.4.0.nupkg.sha512",

@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: teams-recording-bot-deployment
+  labels:
+    app: teams-recording-bot-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: teams-recording-bot
+  template:
+    metadata:
+      labels:
+        app: teams-recording-bot
+    spec:
+      containers:
+      - name: nginx
+        image: riserecorder.azurecr.io/teams-recording-bot:v1
+        ports:
+        - containerPort: 80

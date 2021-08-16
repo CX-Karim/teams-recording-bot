@@ -5940,11 +5940,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Tests\\RecordingBot.Tests.csproj",
+      "projectUniqueName": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Tests\\RecordingBot.Tests.csproj",
       "projectName": "RecordingBot.Tests",
-      "projectPath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Tests\\RecordingBot.Tests.csproj",
+      "projectPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Tests\\RecordingBot.Tests.csproj",
       "packagesPath": "C:\\Users\\karim\\.nuget\\packages\\",
-      "outputPath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Tests\\obj\\",
+      "outputPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Tests\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\karim\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -5961,14 +5961,14 @@
         "net472": {
           "targetAlias": "net472",
           "projectReferences": {
-            "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj": {
-              "projectPath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj"
+            "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj": {
+              "projectPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj"
             },
-            "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj": {
-              "projectPath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj"
+            "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj": {
+              "projectPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj"
             },
-            "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj": {
-              "projectPath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj"
+            "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj": {
+              "projectPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj"
             }
           }
         }
@@ -6026,7 +6026,7 @@
             "version": "[4.5.4, )"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100-preview.6.21355.2\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
       }
     }
   }

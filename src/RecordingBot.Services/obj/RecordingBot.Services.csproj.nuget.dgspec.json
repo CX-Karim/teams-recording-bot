@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj": {}
+    "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj": {}
   },
   "projects": {
-    "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj": {
+    "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj",
+        "projectUniqueName": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj",
         "projectName": "RecordingBot.Model",
-        "projectPath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj",
+        "projectPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj",
         "packagesPath": "C:\\Users\\karim\\.nuget\\packages\\",
-        "outputPath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Model\\obj\\",
+        "outputPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\karim\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -65,18 +65,18 @@
               "version": "[4.5.0, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100-preview.6.21355.2\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj": {
+    "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj",
+        "projectUniqueName": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj",
         "projectName": "RecordingBot.Services",
-        "projectPath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj",
+        "projectPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj",
         "packagesPath": "C:\\Users\\karim\\.nuget\\packages\\",
-        "outputPath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Services\\obj\\",
+        "outputPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Services\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\karim\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -93,8 +93,8 @@
           "net472": {
             "targetAlias": "net472",
             "projectReferences": {
-              "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj": {
-                "projectPath": "C:\\AKS\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj"
+              "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj": {
+                "projectPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj"
               }
             }
           }
@@ -202,7 +202,7 @@
               "version": "[5.0.0-preview.7.20364.11, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.100-preview.6.21355.2\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
         }
       }
     }

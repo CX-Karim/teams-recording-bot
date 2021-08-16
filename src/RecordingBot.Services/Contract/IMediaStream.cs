@@ -30,6 +30,7 @@ namespace RecordingBot.Services.Contract
         /// <param name="participant">The participant.</param>
         /// <returns>Task.</returns>
         Task AppendAudioBuffer(AudioMediaBuffer buffer, List<IParticipant> participant);
+        Task AppendVideoBuffer(VideoMediaBuffer buffer, List<IParticipant> participant);
         /// <summary>
         /// Ends this instance.
         /// </summary>
