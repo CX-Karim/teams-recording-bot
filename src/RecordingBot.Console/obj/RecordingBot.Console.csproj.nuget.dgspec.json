@@ -1,35 +1,37 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj": {}
+    "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj": {}
   },
   "projects": {
-    "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj": {
+    "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj",
+        "projectUniqueName": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj",
         "projectName": "RecordingBot.Console",
-        "projectPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj",
-        "packagesPath": "C:\\Users\\karim\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Console\\obj\\",
+        "projectPath": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Console\\RecordingBot.Console.csproj",
+        "packagesPath": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\packages",
+        "outputPath": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Console\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\karim\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\NuGet.Config",
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net472"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net472": {
-            "targetAlias": "net472",
             "projectReferences": {
-              "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj": {
-                "projectPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj"
+              "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj": {
+                "projectPath": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj"
               }
             }
           }
@@ -42,8 +44,11 @@
       },
       "frameworks": {
         "net472": {
-          "targetAlias": "net472",
           "dependencies": {
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.9.1, )"
+            },
             "Microsoft.CSharp": {
               "target": "Package",
               "version": "[4.7.0, )"
@@ -57,7 +62,7 @@
               "version": "[4.5.0, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.412\\RuntimeIdentifierGraph.json"
         }
       },
       "runtimes": {
@@ -66,29 +71,31 @@
         }
       }
     },
-    "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj": {
+    "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj",
+        "projectUniqueName": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj",
         "projectName": "RecordingBot.Model",
-        "projectPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj",
-        "packagesPath": "C:\\Users\\karim\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\obj\\",
+        "projectPath": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj",
+        "packagesPath": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\packages",
+        "outputPath": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Model\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\karim\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\NuGet.Config",
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net472"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net472": {
-            "targetAlias": "net472",
             "projectReferences": {}
           }
         },
@@ -100,8 +107,11 @@
       },
       "frameworks": {
         "net472": {
-          "targetAlias": "net472",
           "dependencies": {
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.9.1, )"
+            },
             "Microsoft.CSharp": {
               "target": "Package",
               "version": "[4.7.0, )"
@@ -127,36 +137,38 @@
               "version": "[4.5.0, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.412\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj": {
+    "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj",
+        "projectUniqueName": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj",
         "projectName": "RecordingBot.Services",
-        "projectPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj",
-        "packagesPath": "C:\\Users\\karim\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Services\\obj\\",
+        "projectPath": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Services\\RecordingBot.Services.csproj",
+        "packagesPath": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\packages",
+        "outputPath": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Services\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "C:\\Users\\karim\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\NuGet.Config",
+          "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net472"
         ],
         "sources": {
-          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net472": {
-            "targetAlias": "net472",
             "projectReferences": {
-              "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj": {
-                "projectPath": "C:\\Users\\karim\\source\\repos\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj"
+              "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj": {
+                "projectPath": "C:\\Users\\User\\Downloads\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\microsoft-graph-comms-samples\\Samples\\V1.0Samples\\AksSamples\\teams-recording-bot\\src\\RecordingBot.Model\\RecordingBot.Model.csproj"
               }
             }
           }
@@ -169,8 +181,11 @@
       },
       "frameworks": {
         "net472": {
-          "targetAlias": "net472",
           "dependencies": {
+            "Azure.Storage.Blobs": {
+              "target": "Package",
+              "version": "[12.9.1, )"
+            },
             "DotNetEnv": {
               "target": "Package",
               "version": "[1.4.0, )"
@@ -264,7 +279,7 @@
               "version": "[5.0.0-preview.7.20364.11, )"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.302\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\3.1.412\\RuntimeIdentifierGraph.json"
         }
       }
     }

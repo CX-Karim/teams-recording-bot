@@ -4,6 +4,6 @@
     <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
   </PropertyGroup>
   <ImportGroup Condition=" '$(ExcludeRestorePackageImports)' != 'true' ">
-    <Import Project="$(NuGetPackageRoot)microsoft.skype.bots.media\1.19.0.25-alpha\build\Microsoft.Skype.Bots.Media.targets" Condition="Exists('$(NuGetPackageRoot)microsoft.skype.bots.media\1.19.0.25-alpha\build\Microsoft.Skype.Bots.Media.targets')" />
+    <Import Project="$(NuGetPackageRoot)\microsoft.skype.bots.media\1.19.0.25-alpha\build\Microsoft.Skype.Bots.Media.targets" Condition="Exists('$(NuGetPackageRoot)\microsoft.skype.bots.media\1.19.0.25-alpha\build\Microsoft.Skype.Bots.Media.targets')" />
   </ImportGroup>
 </Project>

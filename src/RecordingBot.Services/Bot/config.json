@@ -1,0 +1,5 @@
+﻿{
+  "ConnectionString": "DefaultEndpointsProtocol=https;AccountName=riseblobstoragetest;AccountKey=9oOla05d2oprnyn1DCGOvXmYVr6WbwLeoZBzL1l7ftDltlmirGvD4czWwDZszMF6ahE99XO6iIfUmMNe/nh6bQ==;EndpointSuffix=core.windows.net",
+  "ContainerName": "risepreprocessedblobs",
+  "TableStorageConnectionString": "DefaultEndpointsProtocol=https;AccountName=riseblobstoragetest;AccountKey=9oOla05d2oprnyn1DCGOvXmYVr6WbwLeoZBzL1l7ftDltlmirGvD4czWwDZszMF6ahE99XO6iIfUmMNe/nh6bQ==;EndpointSuffix=core.windows.net"
+}

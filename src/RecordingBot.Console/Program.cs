@@ -44,7 +44,8 @@ namespace RecordingBot.Console
 
             try
             {
-                System.Console.WriteLine("RecordingBot version:1.0.50 booting");
+                System.Console.WriteLine("RecordingBot version NEWW: booting");
+
                 bot.Boot();
                 bot.StartServer();
 

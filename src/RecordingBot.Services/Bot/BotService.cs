@@ -193,7 +193,7 @@ namespace RecordingBot.Services.Bot
                 var videoSocketSettings = new List<VideoSocketSettings>();
 
                 // create the receive only sockets settings for the multiview support
-                for (int i = 0; i < 4; i++)//HARDCODED
+                for (int i = 0; i < SampleConstants.NumberOfMultiviewSockets; i++)//HARDCODED
                 {
                     videoSocketSettings.Add(new VideoSocketSettings
                     {

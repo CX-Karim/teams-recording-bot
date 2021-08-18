@@ -28,7 +28,8 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-
+using System.IO.Compression;
+using System.IO;
 
 namespace RecordingBot.Services.Bot
 {
@@ -45,7 +46,7 @@ namespace RecordingBot.Services.Bot
         /// <summary>
         /// The audio socket
         /// </summary>
-        private readonly IAudioSocket _audioSocket;
+        private readonly IAudioSocket audioSocket;
         /// <summary>
         /// The media stream
         /// </summary>
@@ -61,11 +62,14 @@ namespace RecordingBot.Services.Bot
         private readonly string _callId;
         private readonly List<IVideoSocket> videoSockets;
         private IVideoSocket vbssSocket;
-        private IVideoSocket oneVideo;
+        private string log;
+        private string appData;
         private List<MediaPayload> vbssData;
+        private readonly string meetingId;
         private Dictionary<int, string> socketUserMapping;
         private Dictionary<string, List<MediaPayload>> userVideoData;
         private readonly ILocalMediaSession mediaSession;
+        private List<AudioPayload> audioData;
 
         /// <summary>
         /// Return the last read 'audio quality of experience data' in a serializable structure
@@ -104,25 +108,25 @@ namespace RecordingBot.Services.Bot
                 logger,
                 mediaSession.MediaSessionId.ToString()
             );
-
+            this.meetingId = string.IsNullOrWhiteSpace(meetingId) ? string.Empty : meetingId;
+            this.appData = "C:\\TEst";
+            System.IO.Directory.CreateDirectory($"{appData}\\{callId}");
             // Subscribe to the audio media.
-            this._audioSocket = mediaSession.AudioSocket;
+            this.audioSocket = mediaSession.AudioSocket;
             this.mediaSession = mediaSession;
-            if (this._audioSocket == null)
+            if (this.audioSocket == null)
             {
                 throw new InvalidOperationException("A mediaSession needs to have at least an audioSocket");
             }
 
-
-            this._audioSocket.AudioMediaReceived += this.OnAudioMediaReceived;
-            oneVideo = this.mediaSession.VideoSocket;
-            if (this.oneVideo != null) {
+            this.audioSocket.AudioMediaReceived += this.OnAudioMediaReceived;
+/*            if (this.videoSockets .oneVideo != null) {
                 mediaSession.VideoSocket.VideoMediaReceived += this.OnVideoMediaReceived;
-                oneVideo.VideoMediaReceived += this.OnVideoMediaReceived;
-            }
+            }*/
 
             this.videoSockets = this.mediaSession.VideoSockets?.ToList();
             // videoParticipants.AddRange(new uint[this.videoSockets.Count()]);
+            
             if (this.videoSockets?.Any() == true)
             {
                 this.videoSockets.ForEach(videoSocket => {
@@ -147,6 +151,10 @@ namespace RecordingBot.Services.Bot
             this.vbssData = new List<MediaPayload>();
             this.socketUserMapping = new Dictionary<int, string>();
             this.userVideoData = new Dictionary<string, List<MediaPayload>>();
+            this.audioData = new List<AudioPayload>();
+
+            this.log = string.Empty;
+            this.log += DateTimeOffset.UtcNow.ToString() + " started log 1.7!\n";
         }
 
         /// <summary>
@@ -162,11 +170,11 @@ namespace RecordingBot.Services.Bot
         /// Gets the audio quality of experience data.
         /// </summary>
         /// <returns>SerializableAudioQualityOfExperienceData.</returns>
-        public SerializableAudioQualityOfExperienceData GetAudioQualityOfExperienceData()
+    /*    public SerializableAudioQualityOfExperienceData GetAudioQualityOfExperienceData()
         {
             AudioQualityOfExperienceData = new SerializableAudioQualityOfExperienceData(this._callId, this._audioSocket.GetQualityOfExperienceData());
             return AudioQualityOfExperienceData;
-        }
+        }*/
 
         /// <summary>
         /// Stops the media.
@@ -184,7 +192,7 @@ namespace RecordingBot.Services.Bot
             try
             {
                 base.Dispose(disposing);
-                this._audioSocket.AudioMediaReceived -= this.OnAudioMediaReceived;
+                this.audioSocket.AudioMediaReceived -= this.OnAudioMediaReceived;
                 if (this.videoSockets?.Any() == true)
                 {
                     this.videoSockets.ForEach(videoSocket => videoSocket.VideoMediaReceived -= this.OnVideoMediaReceived);
@@ -197,21 +205,59 @@ namespace RecordingBot.Services.Bot
             }
             catch (Exception e)
             {
+                this.log += $"Exception {e.Message}\n";
+                this.log += DateTimeOffset.UtcNow.ToString() + " Failed: " + e.Message + " " + e.InnerException + "\n";
                 var innerMessage = e.InnerException == null ? string.Empty : e.InnerException.Message;
                 var innerStack = e.InnerException == null ? string.Empty : e.InnerException.StackTrace;
             }
             try
             {
                 // Saving raw vbss
+                /*                string vbssJson = JsonConvert.SerializeObject(this.vbssData);
+                                System.IO.File.WriteAllText($"C:\\vbssData.json", vbssJson);
+                                foreach (var key in this.userVideoData.Keys)
+                                {
+                                    // Saving raw video
+                                    string videoJson = JsonConvert.SerializeObject(this.userVideoData[key]);
+                                    byte[] videoBytes = Encoding.UTF8.GetBytes(videoJson);
+                                    System.IO.File.WriteAllText($"C:\\{key}VideoData.json", videoJson);
+                                }*/
                 string vbssJson = JsonConvert.SerializeObject(this.vbssData);
-                System.IO.File.WriteAllText($"C:\\vbssData.json", vbssJson);
+                System.IO.File.WriteAllText($"{this.appData}\\{this._callId}\\vbssData.json", vbssJson);
+
+                var config = new CallMediaSessionConfig();
+                config.Users = new List<string>();
+                string connectionString = "DefaultEndpointsProtocol=https;AccountName=riseondemandgosi;AccountKey=PBDMM5ZoVgsgRXcwWOOSlC+gBn0UfhRTWKMQZdfsK2FgJiHK1Ie7J5WoRd7xcQ+AqdIq6jW8yaGtLK3TbeyMPA==;EndpointSuffix=core.windows.net";
+                string containerName = "pre-processed";
+                BlobStorageHelper Blob = new BlobStorageHelper(connectionString, containerName);
                 foreach (var key in this.userVideoData.Keys)
                 {
+                    var filename = MakeValidFileName(key);
                     // Saving raw video
                     string videoJson = JsonConvert.SerializeObject(this.userVideoData[key]);
                     byte[] videoBytes = Encoding.UTF8.GetBytes(videoJson);
-                    System.IO.File.WriteAllText($"C:\\{key}VideoData.json", videoJson);
+
+                    System.IO.File.WriteAllText($"{this.appData}\\{this._callId}\\{filename}.json", videoJson);
+                    Blob.AddFileAsync($"{_callId}/{filename}.json", $"{this.appData}\\{this._callId}\\{filename}.json").Wait();
+
+                    config.Users.Add(filename);
                 }
+
+                // Saving config
+                string configJson = JsonConvert.SerializeObject(config);
+                System.IO.File.WriteAllText($"{this.appData}\\{this._callId}\\config.json", configJson);
+                Blob.AddFileAsync($"{_callId}/config.json", $"{this.appData}\\{this._callId}\\config.json").Wait();
+
+                // Saving raw audio
+                string audioJson = JsonConvert.SerializeObject(this.audioData);
+                System.IO.File.WriteAllText($"{this.appData}\\{this._callId}\\audioData.json", audioJson);
+                Blob.AddFileAsync($"{_callId}/audioData.json", $"{this.appData}\\{this._callId}\\audioData.json").Wait();
+
+                // - Saving meeting info
+                var meetingInfo = new MeetingInfo { MeetingId = this.meetingId, MeetingName = this.meetingId };
+                string meetingInfoJson = JsonConvert.SerializeObject(meetingInfo);
+                System.IO.File.WriteAllText($"{this.appData}\\{this._callId}\\meetinginfo.json", meetingInfoJson);
+                Blob.AddFileAsync($"{_callId}/meetinginfo.json", $"{this.appData}\\{this._callId}\\meetinginfo.json").Wait();
             }
             catch (Exception e)
             {
@@ -219,7 +265,13 @@ namespace RecordingBot.Services.Bot
                 var innerStack = e.InnerException == null ? string.Empty : e.InnerException.StackTrace;
             }
         }
+        private static string MakeValidFileName(string name)
+        {
+            string invalidChars = System.Text.RegularExpressions.Regex.Escape(new string(System.IO.Path.GetInvalidFileNameChars()));
+            string invalidRegStr = string.Format(@"([{0}]*\.+$)|([{0}]+)", invalidChars);
 
+            return System.Text.RegularExpressions.Regex.Replace(name, invalidRegStr, "_");
+        }
         // Event Dispose of the bot media stream object
         /* _eventPublisher.Publish("MediaStreamDispose", disposing.ToString());
 
@@ -244,7 +296,7 @@ namespace RecordingBot.Services.Bot
              System.IO.File.WriteAllText($"vbssData.json", vbssJson);
              foreach (var key in this.userVideoData.Keys)
              {
-                 var filename = "test";
+                 var filename = "DUALIPA";
                  // Saving raw video
                  string videoJson = JsonConvert.SerializeObject(this.userVideoData[key]);
                  byte[] videoBytes = Encoding.UTF8.GetBytes(videoJson);
@@ -255,18 +307,19 @@ namespace RecordingBot.Services.Bot
          }
          catch
          {
+             System.Console.WriteLine("KILL ME PLS");
          }*/
-    //}
+        //}
 
         /// <summary>
         /// Receive audio from subscribed participant.
         /// </summary>
         /// <param name="sender">The sender.</param>
         /// <param name="e">The audio media received arguments.</param>
-            private async void OnAudioMediaReceived(object sender, AudioMediaReceivedEventArgs e)
+        private async void OnAudioMediaReceived(object sender, AudioMediaReceivedEventArgs e)
         {
-            
-            this.GraphLogger.Info($"Received Audio: [AudioMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp})]");
+
+            /*this.GraphLogger.Info($"Received Audio: [AudioMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp})]");
 
             try
             {
@@ -280,11 +333,40 @@ namespace RecordingBot.Services.Bot
             finally
             {
                 e.Buffer.Dispose();
+            }*/
+            try
+            {
+                long length = (int)e.Buffer.Length;
+                byte[] retrievedBuffer = new byte[length];
+                Marshal.Copy(e.Buffer.Data, retrievedBuffer, 0, (int)length);
+
+                this.audioData.Add(new AudioPayload
+                {
+                    Data = retrievedBuffer,
+                    Timestamp = e.Buffer.Timestamp,
+                    Length = e.Buffer.Length,
+                });
+
+                /*
+                if (this.wavFileWriter != null)
+                {
+                    this.wavFileWriter.EnqueueAsync(retrievedBuffer).Wait();
+                }
+                */
+            }
+            catch (Exception ex)
+            {
+                this.log += e.Buffer.Timestamp + $" {ex.Message} {ex.InnerException}";
+            }
+            finally
+            {
+                e.Buffer.Dispose();
             }
 
         }
         public void Subscribe(MediaType mediaType, uint mediaSourceId, VideoResolution videoResolution, Microsoft.Graph.Identity participant, uint socketId = 0)
         {
+            this.log += DateTimeOffset.UtcNow.ToString() + $" Subscribe has been called {socketId}\n";
             try
             {
                 this.ValidateSubscriptionMediaType(mediaType);
@@ -295,10 +377,14 @@ namespace RecordingBot.Services.Bot
                     if (this.vbssSocket == null)
                     {
                         this.GraphLogger.Warn($"vbss socket not initialized");
+                        this.log += DateTimeOffset.UtcNow.ToString() + " vbss socket not initialized\n";
+
                     }
                     else
                     {
                         this.vbssSocket.Subscribe(videoResolution, mediaSourceId);
+                        this.log += DateTimeOffset.UtcNow.ToString() + " Subscribed vbss\n";
+
                         this.vbssData.Add(new MediaPayload
                         {
                             Data = null,
@@ -361,7 +447,6 @@ namespace RecordingBot.Services.Bot
             {
                 System.Console.WriteLine(ex.ToString());
                 this.GraphLogger.Error(ex, $"Video Subscription failed for the socket: {socketId} and MediaSourceId: {mediaSourceId} with exception");
-                System.Console.WriteLine($"Video Subscription failed for the socket: {socketId} and MediaSourceId: {mediaSourceId} with exception");
             }
         }
         public void Unsubscribe(MediaType mediaType, uint socketId = 0)
@@ -371,6 +456,8 @@ namespace RecordingBot.Services.Bot
                 this.ValidateSubscriptionMediaType(mediaType);
 
                 this.GraphLogger.Info($"Unsubscribing to video for the socket: {socketId} and mediaType: {mediaType}");
+                this.log += DateTimeOffset.UtcNow.ToString() + " Unubscribed vbss\n";
+
 
                 if (mediaType == MediaType.Vbss)
                 {
@@ -404,6 +491,7 @@ namespace RecordingBot.Services.Bot
             }
             catch (Exception ex)
             {
+
                 this.GraphLogger.Error(ex, $"Unsubscribing to video failed for the socket: {socketId} with exception");
             }
         }
@@ -428,6 +516,7 @@ namespace RecordingBot.Services.Bot
                     byte[] second = new byte[length];
                     // this.log += DateTimeOffset.UtcNow.ToString() + "Copy from pointer to byte array\n";
                     Marshal.Copy(e.Buffer.Data, second, 0, length);
+                    System.Console.WriteLine($"RECORDING VIDEOOOOOOO:                {e.Buffer.Data}");
                     this.userVideoData[this.socketUserMapping[e.SocketId]].Add(new MediaPayload
                     {
                         Data = second,
@@ -461,6 +550,7 @@ namespace RecordingBot.Services.Bot
         }
         private async void OnVbssMediaReceived(object sender, VideoMediaReceivedEventArgs e)
         {
+            System.Console.WriteLine($"RECORDING VBSSSSSS{e.Buffer.Data}");
             this.GraphLogger.Info($"[{e.SocketId}]: Received VBSS: [VideoMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp}, Width={e.Buffer.VideoFormat.Width}, Height={e.Buffer.VideoFormat.Height}, ColorFormat={e.Buffer.VideoFormat.VideoColorFormat}, FrameRate={e.Buffer.VideoFormat.FrameRate})]");
             // this.log += DateTimeOffset.UtcNow.ToString() + $"[{e.SocketId}]: Received VBSS: [VideoMediaReceivedEventArgs(Data=<{e.Buffer.Data.ToString()}>, Length={e.Buffer.Length}, Timestamp={e.Buffer.Timestamp}, Width={e.Buffer.VideoFormat.Width}, Height={e.Buffer.VideoFormat.Height}, ColorFormat={e.Buffer.VideoFormat.VideoColorFormat}, FrameRate={e.Buffer.VideoFormat.FrameRate})]\n";
             try
@@ -489,6 +579,11 @@ namespace RecordingBot.Services.Bot
             }
 
             e.Buffer.Dispose();
+        }
+        class MeetingInfo
+        {
+            public string MeetingName { get; set; }
+            public string MeetingId { get; set; }
         }
     }
 }

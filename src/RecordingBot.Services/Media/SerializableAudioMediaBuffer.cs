@@ -110,6 +110,7 @@ namespace RecordingBot.Services.Media
                 }
             }
         }
+        
 
         /// <summary>
         /// Gets the participant from msi.

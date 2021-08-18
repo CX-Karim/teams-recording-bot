@@ -19,6 +19,7 @@ using Microsoft.Graph.Communications.Common.Telemetry;
 using Microsoft.Graph.Communications.Resources;
 using Microsoft.Skype.Bots.Media;
 using Microsoft.Skype.Bots.Media;
+using Newtonsoft.Json;
 using RecordingBot.Model.Constants;
 using RecordingBot.Services.Contract;
 using RecordingBot.Services.ServiceSetup;
@@ -78,7 +79,7 @@ namespace RecordingBot.Services.Bot
         /// </summary>
         private CaptureEvents _capture;
         private readonly HashSet<uint> availableSocketIds = new HashSet<uint>();
-
+        private string log = string.Empty;
         /// <summary>
         /// The is disposed
         /// </summary>
@@ -98,7 +99,6 @@ namespace RecordingBot.Services.Bot
         )
             : base(TimeSpan.FromMinutes(10), statefulCall?.GraphLogger)
         {
-             System.Console.WriteLine("SANITY CHECKK");
             _settings = (AzureSettings)settings;
             _eventPublisher = eventPublisher;
 
@@ -106,9 +106,9 @@ namespace RecordingBot.Services.Bot
             this.Call.OnUpdated += this.CallOnUpdated;
             this.Call.Participants.OnUpdated += this.ParticipantsOnUpdated;
             this.Call.Participants.OnUpdated += this.ParticipantsOnUpdated;
-  
             this.BotMediaStream = new BotMediaStream(this.Call.GetLocalMediaSession(), this.Call.Id, this.GraphLogger, eventPublisher,  _settings);
-
+            var audioSocket = this.Call.GetLocalMediaSession().AudioSocket;
+            audioSocket.DominantSpeakerChanged += this.OnDominantSpeakerChanged;
             var sockets = this.Call.GetLocalMediaSession().VideoSockets;
 
             foreach (var socket in this.Call.GetLocalMediaSession().VideoSockets)
@@ -129,12 +129,14 @@ namespace RecordingBot.Services.Bot
             if (args.OldResource.MediaStreams.Where(x => (x.MediaType == Modality.Video) && (x.Direction == MediaDirection.ReceiveOnly || x.Direction == MediaDirection.Inactive)).FirstOrDefault() != null &&
                 args.NewResource.MediaStreams.Where(x => x.MediaType == Modality.Video && (x.Direction == MediaDirection.SendReceive || x.Direction == MediaDirection.SendOnly)).FirstOrDefault() != null)
             {
+                System.Console.WriteLine("USER IS SHARING VIDEO PLS HELPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP");
                 this.SubscribeToParticipantVideo(sender, forceSubscribe: false);
             }
 
             else if (args.OldResource.MediaStreams.Where(x => x.MediaType == Modality.Video && (x.Direction == MediaDirection.SendReceive || x.Direction == MediaDirection.SendOnly)).FirstOrDefault() != null &&
                 args.NewResource.MediaStreams.Where(x => x.MediaType == Modality.Video && (x.Direction == MediaDirection.ReceiveOnly || x.Direction == MediaDirection.Inactive)).FirstOrDefault() != null)
             {
+                System.Console.WriteLine("USER IS NOT SHARING VIDEO PLS HELPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP");
 
                 this.UnsubscribeFromParticipantVideo(sender);
             }
@@ -162,11 +164,10 @@ namespace RecordingBot.Services.Bot
         /// <inheritdoc />
         protected override void Dispose(bool disposing)
         {
-
             base.Dispose(disposing);
             _isDisposed = true;
-            this.Call.OnUpdated -= this.CallOnUpdated;
-            this.Call.Participants.OnUpdated -= this.ParticipantsOnUpdated;
+            this.log += "Disposing\n";
+
             var audioSocket = this.Call.GetLocalMediaSession().AudioSocket;
             audioSocket.DominantSpeakerChanged -= this.OnDominantSpeakerChanged;
 
@@ -178,10 +179,23 @@ namespace RecordingBot.Services.Bot
                 participant.OnUpdated -= this.OnParticipantUpdated;
             }
 
-            this.BotMediaStream?.Dispose();
-
-            // Event - Dispose of the call completed ok
+            /*
+            this.recordingStatusFlipTimer.Enabled = false;
+            this.recordingStatusFlipTimer.Elapsed -= this.OnRecordingStatusFlip;
+            */
             _eventPublisher.Publish("CallDisposedOK", $"Call.Id: {this.Call.Id}");
+            this.BotMediaStream.Dispose();
+            string userListJson = JsonConvert.SerializeObject(this.userList);
+            string pathP = $"C:\\TEst\\{this.Call.Id}";
+            if (System.IO.Directory.Exists(pathP))
+            {
+                Console.WriteLine("That path exists already.");
+            }
+            else
+            {
+                DirectoryInfo di = System.IO.Directory.CreateDirectory(pathP);
+            }
+            System.IO.File.WriteAllText($"C:\\TEst\\{this.Call.Id}\\userList.json", userListJson);
         }
 
         /// <summary>
@@ -300,6 +314,7 @@ namespace RecordingBot.Services.Bot
         {
             if (added)
             {
+                 System.Console.WriteLine("USER ADDED");
                 participants.Add(participant);
                 this.SubscribeToParticipantVideo(participant, forceSubscribe: false);
             }
@@ -353,12 +368,13 @@ namespace RecordingBot.Services.Bot
         /// <param name="args">Event args containing added and removed participants.</param>
         public void ParticipantsOnUpdated(IParticipantCollection sender, CollectionEventArgs<IParticipant> args)
         {
-/*            if (_settings.CaptureEvents)
-            {
-                _capture?.Append(args);
-            }
-            updateParticipants(args.AddedResources);
-            updateParticipants(args.RemovedResources, false);*/
+            log += $"ParticipantsOnUpdated\n";
+            /*            if (_settings.CaptureEvents)
+                        {
+                            _capture?.Append(args);
+                        }
+                        updateParticipants(args.AddedResources);
+                        updateParticipants(args.RemovedResources, false);*/
             foreach (var participant in args.AddedResources)
             {
                 // todo remove the cast with the new graph implementation,
@@ -411,29 +427,37 @@ namespace RecordingBot.Services.Bot
         }
         private void SubscribeToParticipantVideo(IParticipant participant, bool forceSubscribe = true)
         {
-            // string log = string.Empty;
+            log += "participant video subscribe" + "\n";
+
+            foreach (var stream in participant.Resource.MediaStreams)
+            {
+                this.log += "\t" + "Resource: " + stream.MediaType + "\n";
+                this.log += "\t\t" + "Direction: " + stream.Direction + "\n";
+            }
             try
             {
                 bool subscribeToVideo = false;
                 uint socketId = uint.MaxValue;
 
                 // filter the mediaStreams to see if the participant has a video send
-                var participantSendCapableVideoStream = participant.Resource.MediaStreams.Where(x => x.MediaType == Modality.Video &&
-                   (x.Direction == MediaDirection.SendReceive || x.Direction == MediaDirection.SendOnly)).FirstOrDefault();
+                var participantSendCapableVideoStream = participant.Resource.MediaStreams.Where(x => x.MediaType == Modality.Video).FirstOrDefault();
                 if (participantSendCapableVideoStream != null)
                 {
+                    log += "\t" + "participantSendCapableVideoStream is not null Label: " + participantSendCapableVideoStream.Label + "\n";
                     bool updateMSICache = false;
                     var msi = uint.Parse(participantSendCapableVideoStream.SourceId);
                     lock (this.subscriptionLock)
                     {
                         if (this.currentVideoSubscriptions.Count < this.Call.GetLocalMediaSession().VideoSockets.Count)
                         {
-
+                            log += "\t" + "currentVideoSubscriptions.Count < this.Call.GetLocalMediaSession().VideoSockets.Count" + "\n";
                             // we want to verify if we already have a socket subscribed to the MSI
                             if (!this.msiToSocketIdMapping.ContainsKey(msi))
                             {
+                                log += "\t" + "!this.msiToSocketIdMapping.ContainsKey(msi)" + "\n";
                                 if (this.availableSocketIds.Any())
                                 {
+                                    log += "\t" + "this.availableSocketIds.Any()" + "\n";
                                     socketId = this.availableSocketIds.Last();
                                     this.availableSocketIds.Remove((uint)socketId);
                                     subscribeToVideo = true;
@@ -448,12 +472,14 @@ namespace RecordingBot.Services.Bot
                         {
                             // here we know that all the sockets subscribed to a video we need to update the msi cache,
                             // and obtain the socketId to reuse with the new MSI
+                            log += "\t" + "forceSubscribe" + "\n";
                             updateMSICache = true;
                             subscribeToVideo = true;
                         }
 
                         if (updateMSICache)
                         {
+                            log += "\t" + "updateMSICache" + "\n";
                             this.currentVideoSubscriptions.TryInsert(msi, out uint? dequeuedMSIValue);
                             if (dequeuedMSIValue != null)
                             {
@@ -462,6 +488,7 @@ namespace RecordingBot.Services.Bot
                             }
                         }
                     }
+                    log += "\t" + subscribeToVideo.ToString() + " " + socketId + " " + "\n";
                     if (subscribeToVideo && socketId != uint.MaxValue)
                     {
                         var participantDetails = participant.Resource.Info.Identity.User;
@@ -469,11 +496,12 @@ namespace RecordingBot.Services.Bot
                         {
                             participantDetails = participant.Resource.Info.Identity.GetGuest();
                         }
-
+                        log += "\t" + "subscribeToVideo && socketId != uint.MaxValue" + "\n";
                         this.msiToSocketIdMapping.AddOrUpdate(msi, socketId, (k, v) => socketId);
 
                         this.GraphLogger.Info($"[{this.Call.Id}:SubscribeToParticipant(subscribing to the participant {participant.Id} on socket {socketId})");
                         this.BotMediaStream.Subscribe(MediaType.Video, msi, VideoResolution.HD1080p, participantDetails, socketId);
+                        System.Console.WriteLine("AFTER SUBSCRIPTION VIDEO ONLY");
                     }
                 }
 
@@ -487,10 +515,11 @@ namespace RecordingBot.Services.Bot
                     {
                         participantDetails = participant.Resource.Info.Identity.GetGuest();
                     }
-
+                    log += "\t" + "vbssParticipant != null" + "\n";
                     // new sharer
                     this.GraphLogger.Info($"[{this.Call.Id}:SubscribeToParticipant(subscribing to the VBSS sharer {participant.Id})");
                     this.BotMediaStream.Subscribe(MediaType.Vbss, uint.Parse(vbssParticipant.SourceId), VideoResolution.HD1080p, participantDetails, socketId);
+                    System.Console.WriteLine("AFTER SUBSCIBE");
                 }
             }
             catch (Exception e)
@@ -506,16 +535,20 @@ namespace RecordingBot.Services.Bot
               (x.Direction == MediaDirection.ReceiveOnly || x.Direction == MediaDirection.Inactive)).FirstOrDefault();
 
             // string log = string.Empty;
+            log += "participant video unsubscribe" + "\n";
 
             if (participantSendCapableVideoStream != null)
             {
+                log += "\t" + "participantSendCapableVideoStream != null" + "\n";
                 var msi = uint.Parse(participantSendCapableVideoStream.SourceId);
                 lock (this.subscriptionLock)
                 {
                     if (this.currentVideoSubscriptions.TryRemove(msi))
                     {
+                        log += "\t" + "this.currentVideoSubscriptions.TryRemove(msi)" + "\n";
                         if (this.msiToSocketIdMapping.TryRemove(msi, out uint socketId))
                         {
+                            log += "\t" + "this.msiToSocketIdMapping.TryRemove(msi, out uint socketId)" + "\n";
                             this.BotMediaStream.Unsubscribe(MediaType.Video, socketId);
                             this.availableSocketIds.Add(socketId);
                         }
@@ -527,7 +560,7 @@ namespace RecordingBot.Services.Bot
         private void OnDominantSpeakerChanged(object sender, DominantSpeakerChangedEventArgs e)
         {
             this.GraphLogger.Info($"[{this.Call.Id}:OnDominantSpeakerChanged(DominantSpeaker={e.CurrentDominantSpeaker})]");
-
+            this.log += $"[{this.Call.Id}:OnDominantSpeakerChanged(DominantSpeaker={e.CurrentDominantSpeaker})]\n";
 
             if (e.CurrentDominantSpeaker != DominantSpeakerNone)
             {
